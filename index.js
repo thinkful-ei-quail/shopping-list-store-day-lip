@@ -1,10 +1,25 @@
+/* eslint-disable no-undef */
+'use strict';
+
+
+/* -----  More Complex UI Store Exercise ----------
+
+Notes:
+
+To add in the feature for editing we'll need the following:
+- an edit button
+- an input field generated at the place the itemName currently resides
+-- a save or submit button?
+
+expected changes:
+- items.name to be updated
+- handleEditItemClicked function
+- handledEditItemClicked added to handleShoppingList function
+
+*/
+
 const store = {
-  items: [
-    { id: cuid(), name: 'apples', checked: false },
-    { id: cuid(), name: 'oranges', checked: false },
-    { id: cuid(), name: 'milk', checked: true },
-    { id: cuid(), name: 'bread', checked: false }
-  ],
+  items: [],
   hideCheckedItems: false
 };
 
@@ -12,7 +27,9 @@ const generateItemElement = function (item) {
   let itemTitle = `<span class='shopping-item shopping-item__checked'>${item.name}</span>`;
   if (!item.checked) {
     itemTitle = `
-     <span class='shopping-item'>${item.name}</span>
+    <form class="js-edit-item">
+     <input class='shopping-item' type='text' value='${item.name}' >
+    </form>
     `;
   }
 
@@ -34,6 +51,13 @@ const generateShoppingItemsString = function (shoppingList) {
   const items = shoppingList.map((item) => generateItemElement(item));
   return items.join('');
 };
+
+const editListItemName = function (id,itemName) {
+  let item = store.items.find(item => item.id === id);
+  item.name = itemName;
+}
+
+
 
 /**
  * Render the shopping list in the DOM
@@ -145,6 +169,16 @@ const handleToggleFilterClick = function () {
   });
 };
 
+const handleEditShoppingItemSubmit = function () {
+  $('.js-shopping-list').on('submit','.js-edit-item' => event {
+    event.preventDefault();
+    let id = getItemIdFromElement(event.currentTarget);
+    let itemName = $(eventcurrentTarget).find('.shopping-item').val();
+    editListItemName(id, itemName);
+    render();
+  })
+}
+
 /**
  * This function will be our callback when the
  * page loads. It is responsible for initially 
@@ -160,6 +194,7 @@ const handleShoppingList = function () {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleToggleFilterClick();
+  handleEditShoppingItemSubmit();
 };
 
 // when the page loads, call `handleShoppingList`
